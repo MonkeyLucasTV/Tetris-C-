@@ -15,11 +15,10 @@ class bloc{
         };
         LesPos PosTot;
         bool VPerdu= false, DejaSave=false;
+        int combo = 0;
+        sf::Clock comboClock;
+        float comboTimeLimit = 4.0f;
 
-        bool CheckLineLineRotateH(int (&Tab)[4][4]);
-        bool CheckLineLineRotateV(int (&Tab)[4][4]);
-        void SuppLineRotateH(int Tab[4][4]);
-        void SuppLineRotateV(int Tab[4][4]);
         void DeplacementGauche();
         void DeplacementDroite();
         void DeplacementBas();
@@ -31,7 +30,6 @@ class bloc{
         void assembly();
         void next();
         void mouvement(std::string NomMouv);
-        void SuppLine();
         void ScoreAdd(std::string TypePts, int Nbr);
         void drawASprite(sf::Sprite &Tile);
         void DessinerLeTableau();
@@ -55,9 +53,10 @@ class bloc{
 
 
         int GetY();
-
+        int ClearLines();
 
         bool checkLine();
+        bool checkmove(int x, int y);
         bool DetectionBlocEnBas();
         bool Perdu();
         bool DetectionBlocEmpile();
@@ -67,9 +66,20 @@ class bloc{
         inline void Dessiner(){ AddrWindow->display();};
         inline int AfficherBlocSuivant(){ return NbBlocSuivant; };
         inline int AfficherBlocSaved(){ return BlocSaved;};
-        inline int VitesseBloc(){ return ( (60*100)-(2*Niveau*100))/4   ;};
+        inline int VitesseBloc() {
+            int v = (6000 - (200 * Niveau)) / 4;
+            return (v > 100) ? v : 100;
+        }
         inline std::string AfficherLigneDetruite(){ return std::to_string(LigneDetruiteTot);};
         inline std::string AfficherNiveau(){return std::to_string(Niveau);};
         inline std::string AfficherScore(){return std::to_string(score);};
         inline sf::Vector2f RevoyerPosition() {return Tiles.getPosition(); };
+
+        void UpdateCombo();
+        inline int AfficherCombo(){ return combo; }
+        inline bool ComboActif(){ return comboClock.getElapsedTime().asSeconds() < comboTimeLimit; }
+        inline float TempsRestantCombo(){ 
+            return comboTimeLimit - comboClock.getElapsedTime().asSeconds(); 
+        }
+        inline float GetComboTimeLimit(){ return comboTimeLimit; }
 };
